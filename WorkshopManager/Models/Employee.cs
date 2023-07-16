@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace WorkshopManager.Models
 {
     public class Employee
     {
+        [PrimaryKey, AutoIncrement]
         public long ID { get; set; }
         public string FullName { get; set; }
         public string Phone { get; set; }
