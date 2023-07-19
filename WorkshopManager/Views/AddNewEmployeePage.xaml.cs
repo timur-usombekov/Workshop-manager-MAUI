@@ -4,11 +4,12 @@ namespace WorkshopManager.Views;
 
 public partial class AddNewEmployeePage : ContentPage
 {
-	public AddNewEmployeePage(EmployeeViewModel viewModel)
+	public AddNewEmployeePage(AddNewEmployeeViewModel viewModel)
 	{
 		InitializeComponent();
 
 		BindingContext = viewModel;
+
 
     }
 }

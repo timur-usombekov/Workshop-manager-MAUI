@@ -17,24 +17,29 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <CollectionView ItemsSource="{Binding Employees}" Grid.ColumnSpan="2">
+        <CollectionView ItemsSource="{Binding EmployeeWithOccupationsCollection}" Grid.ColumnSpan="2">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:Employee">
-                    <Border Grid.ColumnSpan="2">
+                <DataTemplate x:DataType="model:EmployeeWithOccupations">
+                    <Border Grid.ColumnSpan="2" StrokeThickness="3" Stroke="DarkGray">
                         <VerticalStackLayout Margin="10" Grid.ColumnSpan="2">
-                            <Label Text="{Binding ID}" FontSize="20"/>
-                            <Label Text="{Binding FullName}" FontSize="20"/>
-                            <Label Text="{Binding Phone}" FontSize="20"/>
-                            <Label Text="{Binding TypeOfJob}" FontSize="20"/>
-                            <Label Text="{Binding Status}" FontSize="20"/>
+                            <Label Text="{Binding Employee.ID}" FontSize="20"/>
+                            <Label Text="{Binding Employee.FullName}" FontSize="20"/>
+                            <Label Text="{Binding Employee.Phone}" FontSize="20"/>
+                            <CollectionView ItemsSource="{Binding Job}" ItemsLayout="HorizontalList">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:TypeOfJob">
+                                        <Label Text="{Binding Job, StringFormat='|{0}| '}" FontSize="20"/>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                            <Label Text="{Binding Employee.Status}" FontSize="20"/>
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
         <Button Grid.Row="1" Margin="10" Text="Add" FontSize="24" Command="{Binding GoToCommand}"/>
-        <Button Grid.Row="1" Grid.Column="1" Margin="10" Text="Remove" FontSize="24" Command="{Binding DeleteAllEmployeesCommand}"/>
+        <Button Grid.Row="1" Grid.Column="1" Margin="10" Text="Remove" FontSize="24" Command="{Binding TESTCommand}"/>
     </Grid>
 
 </ContentPage>

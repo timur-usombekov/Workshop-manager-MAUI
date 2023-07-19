@@ -2,8 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WorkshopManager.Views.AddNewEmployeePage"
+             xmlns:model="clr-namespace:WorkshopManager.Models"
              xmlns:viewmodel="clr-namespace:WorkshopManager.ViewModels"
-             x:DataType="viewmodel:EmployeeViewModel"
+             x:DataType="viewmodel:AddNewEmployeeViewModel"
              Title="Add new employee">
     <Grid>
         <Grid.RowDefinitions>
@@ -17,25 +18,29 @@
                         <Label Text="Enter full name of employee:" FontSize="24"/>
                         <Entry Placeholder="Full name" FontSize="24" Text="{Binding FullNameEntry}"/>
                     </VerticalStackLayout>
-
                     <VerticalStackLayout>
                         <Label Text="Enter phone number of employee:" FontSize="24"/>
                         <Entry Placeholder="+38(###)-###-####" Keyboard="Telephone" FontSize="24" Text="{Binding PhoneEntry}"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout>
                         <Label Text="Enter type of job:" FontSize="24"/>
-                        <Picker Title="select item" FontSize="24" SelectedItem="{Binding TypeOfJobEntry}">
-                            <Picker.Items>
-                                <x:String>first</x:String>
-                                <x:String>second</x:String>
-                                <x:String>third</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <CollectionView SelectionMode="Multiple" 
+                                        ItemsSource="{Binding TypeOfJobs}"
+                                        SelectedItems="{Binding SelectedTypeOfJobs}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:TypeOfJob">
+                                    <HorizontalStackLayout Margin="8">
+                                        <Label Text="{Binding Job}" FontSize = "20"  TextColor = "#006064"/>
+                                    </HorizontalStackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </VerticalStackLayout>
+                    <Button Text="+" FontSize="20" HorizontalOptions="End" Margin="5" Command="{Binding GetNewJobCommand}"/>
                 </VerticalStackLayout>
             </Border>
         </ScrollView>
-        <Button Text="Add new employee" FontSize="24" Grid.Row="1" Margin="10" Command="{Binding AddEmployeeCommand}"/>
+        <Button Text="Add new employee" FontSize="24" Grid.Row="1" Margin="10" Command="{Binding AddNewEmployeeCommand}"/>
     </Grid>
 
 </ContentPage>

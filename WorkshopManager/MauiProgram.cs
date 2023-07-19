@@ -19,6 +19,7 @@ public static class MauiProgram
 			});
 
 		builder.Services.AddSingleton<EmployeeViewModel>();
+		builder.Services.AddSingleton<AddNewEmployeeViewModel>();
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddSingleton<AddNewEmployeePage>();
 

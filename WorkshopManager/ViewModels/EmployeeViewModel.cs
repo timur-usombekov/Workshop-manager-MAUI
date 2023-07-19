@@ -12,80 +12,21 @@ using WorkshopManager.Views;
 
 namespace WorkshopManager.ViewModels
 {
-    public class EmployeeViewModel: BaseViewModel, INotifyPropertyChanged
+    public class EmployeeViewModel: INotifyPropertyChanged
     {
-        private string _fullNameEntry;
-        private string _phoneEntry;
-        private string _typeOfJobEntry;
-
-        public string FullNameEntry
-        {
-            get { return _fullNameEntry; }
-            set 
-            { 
-                if(FullNameEntry == value)
-                    return;
-
-                _fullNameEntry = value;
-                OnPropertyChanged(nameof(FullNameEntry));
-            }
-        }
-        public string PhoneEntry
-        {
-            get { return _phoneEntry; }
-            set
-            {
-                if (PhoneEntry == value)
-                    return;
-
-                _phoneEntry = value;
-                OnPropertyChanged(nameof(PhoneEntry));
-            }
-        }
-        public string TypeOfJobEntry
-        {
-            get { return _typeOfJobEntry; }
-            set
-            {
-                if (PhoneEntry == value)
-                    return;
-
-                _typeOfJobEntry = value;
-                OnPropertyChanged(nameof(TypeOfJobEntry));
-            }
-        }
-
-        public Command AddEmployeeCommand { get; set; }
-        public Command DeleteAllEmployeesCommand { get; set; }
         public Command GoToCommand { get; set; }
-        public ObservableCollection<Employee> Employees { get; set; }
+        public Command TESTCommand { get; set; }
 
-        public EmployeeViewModel() 
+        public ObservableCollection<EmployeeWithOccupations> EmployeeWithOccupationsCollection { get; set; }
+
+        public EmployeeViewModel(AddNewEmployeeViewModel addNewEmployeeViewModel) 
         {
             GoToCommand = new Command(GoTo);
-            AddEmployeeCommand = new Command(Add);
-            DeleteAllEmployeesCommand = new Command(Remove);
-            Employees = new ObservableCollection<Employee>(Connection.Table<Employee>());
-        }
+            TESTCommand = new Command(()=>Debug.WriteLine("No info to debug"));
 
-        public override void Add()
-        {
-            Employee employee = new Employee() 
-                { 
-                    FullName = FullNameEntry, 
-                    Phone = PhoneEntry, 
-                    TypeOfJob = TypeOfJobEntry
-            };
-            Connection.Insert(employee);
-            Employees.Add(employee);
+            EmployeeWithOccupationsCollection = new ObservableCollection<EmployeeWithOccupations>();
 
-            Shell.Current.GoToAsync("..");
-        }
-
-        public override void Remove()
-        {
-            Connection.DeleteAll<Employee>();
-            Employees.Clear();
+            addNewEmployeeViewModel.AddedNewEmployee += ResetEmployeeWithOccupations;
         }
 
         public void GoTo()
@@ -93,11 +34,33 @@ namespace WorkshopManager.ViewModels
             Shell.Current.GoToAsync(nameof(AddNewEmployeePage));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private void ResetEmployeeWithOccupations()
+        {
+            EmployeeWithOccupationsCollection.Clear();
 
+            foreach(Employee emp in WorkshopDB.Connection.Table<Employee>()) 
+            {
+                EmployeeWithOccupations employeeWithOccupations = new EmployeeWithOccupations();
+                employeeWithOccupations.Employee = emp;
+                var queryToOccupation = WorkshopDB.Connection.Table<Occupation>().Where(o => o.EmployeeID == emp.ID);
+                foreach (var occupation in queryToOccupation)
+                {
+                    var queryToJob = WorkshopDB.Connection.Table<TypeOfJob>().Where(t => t.ID == occupation.TypeOfJobID).ToList();
+
+                    foreach (var job in queryToJob)
+                    {
+                        employeeWithOccupations.Job.Add(job);
+                    }
+                }
+                EmployeeWithOccupationsCollection.Add(employeeWithOccupations);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
     }
 }

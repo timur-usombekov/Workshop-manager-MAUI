@@ -1,4 +1,5 @@
-﻿using WorkshopManager.Views;
+﻿using WorkshopManager.ViewModels;
+using WorkshopManager.Views;
 
 namespace WorkshopManager;
 
