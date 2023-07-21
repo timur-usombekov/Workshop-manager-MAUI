@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -19,7 +20,7 @@ namespace WorkshopManager.ViewModels
             get { return _fullNameEntry; }
             set
             {
-                if (FullNameEntry == value)
+                if (_fullNameEntry == value)
                     return;
 
                 _fullNameEntry = value;
@@ -31,7 +32,7 @@ namespace WorkshopManager.ViewModels
             get { return _phoneEntry; }
             set
             {
-                if (PhoneEntry == value)
+                if (_phoneEntry == value)
                     return;
 
                 _phoneEntry = value;
@@ -51,24 +52,24 @@ namespace WorkshopManager.ViewModels
             GetNewJobCommand = new Command(GetNewJobForDB);
 
             SelectedTypeOfJobs = new ObservableCollection<object>();
-            TypeOfJobs = new ObservableCollection<TypeOfJob>();
+            TypeOfJobs = new ObservableCollection<TypeOfJob>(WorkshopDB.Connection.Table<TypeOfJob>());
         }
 
         public void AddNewEmployee()
         {
             if (string.IsNullOrWhiteSpace(FullNameEntry))
             {
-                Shell.Current.DisplayAlert("Error", "You did not enter a name", "OK");
+                Error("You did not enter a name");
                 return;
             }
             if (string.IsNullOrWhiteSpace(PhoneEntry))
             {
-                Shell.Current.DisplayAlert("Error", "You did not enter a phone", "OK");
+                Error("You did not enter a phone");
                 return;
             }
             if (SelectedTypeOfJobs.Count == 0)
             {
-                Shell.Current.DisplayAlert("Error", "You did not pick any job", "OK");
+                Error("You did not pick any job");
                 return;
             }
 
@@ -79,8 +80,15 @@ namespace WorkshopManager.ViewModels
                 Status = Status.Working
             };
 
-            WorkshopDB.Connection.Insert(employee);
-            // TODO: Add insert into the Employees collection here (or not?)
+            try
+            {
+                WorkshopDB.Connection.Insert(employee);
+            }
+            catch (SQLite.SQLiteException)
+            {
+                Error("Database already has this phone");
+                return;
+            }
 
             foreach (object job in SelectedTypeOfJobs)
             {
@@ -97,7 +105,8 @@ namespace WorkshopManager.ViewModels
             }
 
             ClearEntry();
-            OnEmployeeAdded();
+
+            MessagingCenter.Send(this, "Reset view");
 
             Shell.Current.GoToAsync("..");
         }
@@ -110,6 +119,10 @@ namespace WorkshopManager.ViewModels
             WorkshopDB.Connection.Insert(typeOfJob);
             TypeOfJobs.Add(typeOfJob);
         }
+        public async void Error(string ex)
+        {
+            await Shell.Current.DisplayAlert("Error", ex, "OK");
+        }
 
         private void ClearEntry()
         {
@@ -120,14 +133,14 @@ namespace WorkshopManager.ViewModels
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event Action AddedNewEmployee;    
+        //public event Action AddedNewEmployee;    
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public void OnEmployeeAdded()
-        {
-            AddedNewEmployee?.Invoke();
-        }
+        //public void OnEmployeeAdded()
+        //{
+        //    AddedNewEmployee?.Invoke();
+        //}
     }
 }

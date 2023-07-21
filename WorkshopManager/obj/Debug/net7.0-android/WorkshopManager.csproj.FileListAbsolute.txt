@@ -965,6 +965,7 @@ D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-androi
 D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-android\android\compressed_assemblies.x86_64.o
 D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-android\android\jni_remap.x86_64.o
 D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-android\app_shared_libraries\x86_64\libxamarin-app.so
+D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-android\resizetizer\r\drawable\employee_icon.jpg
 D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-android\android\assets\mscorlib.dll
 D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-android\android\assets\System.Collections.Concurrent.dll
 D:\VisualStudio\Projects\WorkshopManager\WorkshopManager\obj\Debug\net7.0-android\android\assets\System.Data.Common.dll

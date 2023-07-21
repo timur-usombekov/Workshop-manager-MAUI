@@ -20,8 +20,11 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<EmployeeViewModel>();
 		builder.Services.AddSingleton<AddNewEmployeeViewModel>();
+		builder.Services.AddTransient<EmployeeDetailsPageViewModel>();
+
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddSingleton<AddNewEmployeePage>();
+		builder.Services.AddTransient<EmployeeDetailsPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

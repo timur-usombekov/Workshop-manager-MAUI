@@ -14,24 +14,47 @@ namespace WorkshopManager.ViewModels
 {
     public class EmployeeViewModel: INotifyPropertyChanged
     {
-        public Command GoToCommand { get; set; }
+        public Command GoToAddNewEmployeePageCommand { get; set; }
+        public Command<EmployeeWithOccupations> GoToEmployeeDetailsPageCommand { get; set; }
         public Command TESTCommand { get; set; }
 
         public ObservableCollection<EmployeeWithOccupations> EmployeeWithOccupationsCollection { get; set; }
 
         public EmployeeViewModel(AddNewEmployeeViewModel addNewEmployeeViewModel) 
         {
-            GoToCommand = new Command(GoTo);
+            GoToAddNewEmployeePageCommand = new Command(GoToAddNewEmployeePage);
+            GoToEmployeeDetailsPageCommand = new Command<EmployeeWithOccupations>(GoToEmployeeDetailsPage);
             TESTCommand = new Command(()=>Debug.WriteLine("No info to debug"));
 
             EmployeeWithOccupationsCollection = new ObservableCollection<EmployeeWithOccupations>();
+            ResetEmployeeWithOccupations();
 
-            addNewEmployeeViewModel.AddedNewEmployee += ResetEmployeeWithOccupations;
+            MessagingCenter.Subscribe<AddNewEmployeeViewModel>(this, "Reset view", (sender) =>
+            {
+                ResetEmployeeWithOccupations();
+            });
+            MessagingCenter.Subscribe<EmployeeDetailsPageViewModel>(this, "Reset view", (sender) =>
+            {
+                ResetEmployeeWithOccupations();
+                WorkshopDB.GetAllTablesToDebug();
+            });
+            //addNewEmployeeViewModel.AddedNewEmployee += ResetEmployeeWithOccupations;
         }
 
-        public void GoTo()
+        public async void GoToAddNewEmployeePage()
         {
-            Shell.Current.GoToAsync(nameof(AddNewEmployeePage));
+            await Shell.Current.GoToAsync(nameof(AddNewEmployeePage));
+        }
+        public async void GoToEmployeeDetailsPage(EmployeeWithOccupations employeeWithOccupations)
+        {
+            if (employeeWithOccupations is null)
+                return;
+
+            await Shell.Current.GoToAsync($"{nameof(EmployeeDetailsPage)}",  true, 
+                new Dictionary<string, object>
+                {
+                    {"EmployeeWithOccupations", employeeWithOccupations}
+                });
         }
 
         private void ResetEmployeeWithOccupations()
